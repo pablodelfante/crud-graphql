@@ -4,9 +4,10 @@ import { buildSchema } from 'graphql';
 import peoples from './peoples.js';
 
 const app = express();
-console.log(peoples)
 
 // cuando es un array se debe especificar [elem,...]
+// basicamente eso son schemas de grapshql
+//puedo especificar si son: input Ejemplo, type Mutation, type Query etc
 var schema = buildSchema(`
     type Query {
        hello:String
@@ -17,27 +18,36 @@ var schema = buildSchema(`
         surname: String
         age: Int
     }
-
-    type Mutation {
-        createPeople(input: PeopleInput): People
-    }
-    Input PeopleInput {
+    
+    input PeopleInput {
         name: String
         surname: String
         age: Int
     }
+    type Mutation {
+        createPeople(input: PeopleInput): People
+    }
 `);
 
 var root = {
-    hello: () => { return 'hola' },
-    peoples: () => peoples,
 
-    Mutation: {
-        createPeople(_, {input}){
-            return null
-        }
+    hello: () => { return 'cuando hago una query con hello me retorna esto' },
+    peoples: () => {
+        peoples//al consultar peoples retorna peoples
+    },
+
+
+    // mutaciones son para hacer modifiaciones
+
+    createPeople({ input }) {
+        peoples.push(input);
+        console.log(peoples);
+        return input;
     }
-    
+
+
+
+
 }
 
 app.use('/graphql', graphqlHTTP({
@@ -47,5 +57,5 @@ app.use('/graphql', graphqlHTTP({
 }));
 
 app.listen(3000, () => {
-    console.log('server online port 3000')
+    console.log('server http://localhost:3000/graphql')
 });
