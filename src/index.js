@@ -28,26 +28,24 @@ var schema = buildSchema(`
         createPeople(input: PeopleInput): People
     }
 `);
+/* type Query {
+    getMessage(id: ID!): Message
+} */
 
 var root = {
-
+    // saludo simple
     hello: () => { return 'cuando hago una query con hello me retorna esto' },
     peoples: () => {
-        peoples//al consultar peoples retorna peoples
+        return peoples//al consultar peoples retorna peoples
     },
 
 
     // mutaciones son para hacer modifiaciones
-
     createPeople({ input }) {
         peoples.push(input);
-        console.log(peoples);
+        // console.log(peoples);
         return input;
     }
-
-
-
-
 }
 
 app.use('/graphql', graphqlHTTP({
