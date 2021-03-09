@@ -2,8 +2,10 @@ import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 import peoples from './peoples.js';
+import connect from './database.js';
 
 const app = express();
+connect();
 
 // cuando es un array se debe especificar [elem,...]
 // basicamente eso son schemas de grapshql
