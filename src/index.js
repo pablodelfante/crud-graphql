@@ -3,7 +3,7 @@ import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 import peoples from './peoples.js';
 import connect from './database.js';
-import People from './models/people.js';
+import People from './models/People.js';
 
 const app = express();
 connect();
