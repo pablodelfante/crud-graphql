@@ -3,6 +3,7 @@ import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
 import peoples from './peoples.js';
 import connect from './database.js';
+import People from './models/people.js';
 
 const app = express();
 connect();
@@ -28,6 +29,7 @@ var schema = buildSchema(`
     }
     type Mutation {
         createPeople(input: PeopleInput): People
+        deletePeople(_id: ID): People
     }
 `);
 /* type Query {
@@ -37,16 +39,23 @@ var schema = buildSchema(`
 var root = {
     // saludo simple
     hello: () => { return 'cuando hago una query con hello me retorna esto' },
-    peoples: () => {
-        return peoples//al consultar peoples retorna peoples
+    peoples: async () => {
+        const res = await People.find();
+        return res//al consultar peoples retorna peoples
     },
 
 
     // mutaciones son para hacer modifiaciones
-    createPeople({ input }) {
-        peoples.push(input);
-        // console.log(peoples);
-        return input;
+    async createPeople({ input }) {
+        // peoples.push(input);
+        const newPeople = new People(input);
+        await newPeople.save();
+        return newPeople;
+    },
+
+    async deletePeople({_id}){
+        console.log(_id)
+        return await People.findByIdAndDelete(_id);
     }
 }
 
