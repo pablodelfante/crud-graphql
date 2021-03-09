@@ -14,9 +14,10 @@ connect();
 var schema = buildSchema(`
     type Query {
        hello:String
-       peoples: [People]
+       getPeoples: [People]
     }
     type People{
+        _id:ID
         name: String
         surname: String
         age: Int
@@ -30,6 +31,7 @@ var schema = buildSchema(`
     type Mutation {
         createPeople(input: PeopleInput): People
         deletePeople(_id: ID): People
+        updatePeople(_id: ID, input: PeopleInput): People
     }
 `);
 /* type Query {
@@ -39,7 +41,7 @@ var schema = buildSchema(`
 var root = {
     // saludo simple
     hello: () => { return 'cuando hago una query con hello me retorna esto' },
-    peoples: async () => {
+    getPeoples: async () => {
         const res = await People.find();
         return res//al consultar peoples retorna peoples
     },
@@ -54,8 +56,12 @@ var root = {
     },
 
     async deletePeople({_id}){
-        console.log(_id)
         return await People.findByIdAndDelete(_id);
+    },
+
+    async updatePeople({_id, input}){
+        const res = await People.findByIdAndUpdate(_id, input, {new:true});
+        return res;
     }
 }
 
